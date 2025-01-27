@@ -26,5 +26,8 @@ app.geometry("500x900")
 app.title("Pokedex with added storm flute")
 app.resizable(width = False, height = False)
 
+button = ctk.CTkButton(app, text="AAAAA")
+button.pack()
+
 app.mainloop()
 
