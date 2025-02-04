@@ -49,7 +49,7 @@ def search_call():
 
 
 def poke_button_press(name):
-    app= ctk.Ctk()
+    app= ctk.CTk()
 
 app = ctk.CTk(fg_color=Wall1)
 app.geometry("500x900")
@@ -61,7 +61,7 @@ app.resizable(width = False, height = False)
 searchFrame = ctk.CTkFrame(app, fg_color= Wall1)
 searchFrame.pack(fill= "x")
 
-buttonFrame = ctk.CTkFrame(app, fg_color= Wall2)
+buttonFrame = ctk.CTkScrollableFrame(app, fg_color= Wall2)
 buttonFrame.pack(fill= "both", expand= True)
 
 searchBar = ctk.CTkEntry(searchFrame,width= 300, fg_color= SearchBar)
