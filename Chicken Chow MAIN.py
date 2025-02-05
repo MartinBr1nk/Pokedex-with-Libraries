@@ -3,12 +3,26 @@ from idlelib.configdialog import help_pages
 
 import pandas as pd
 import matplotlib as plt
+import matplotlib.pyplot as plt
 from tkinter import *
 from tkinter import ttk
 import csv
 import numpy as np
 import customtkinter as ctk
 
+def generate_type_graph():
+    type_counts = fileread['Type 1'].value_counts().add(fileread['Type 2'].value_counts(), fill_value=0)
+    #fill value means that if anything is empty it sets that value to zero and type_counts counts all the types with both types
+
+    #plotting with  matplotlib
+    plt.figure(figsize=(10,6))
+    type_counts.sort_values(ascending=False).plot(kind='bar',color = 'blue')
+    plt.title('Amount of Pokemon per type')
+    plt.xlabel('TYPE')
+    plt.ylabel('No. of Pokemon')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
 
 #making a home page pretty much
 currentScene ="Main"
@@ -24,14 +38,18 @@ Button = '#7F9C96'
 Button2 = '#8FAD88'
 SearchBar = '#CBDF90'
 
-def destroy_button():
-    for widget in buttonFrame.winfo_children(): # this destroys the buttons
+def destroy_button(): # this destroys the buttons
+    for widget in buttonFrame.winfo_children():
         widget.destroy()
 
-def search_call(): #search
+def search_call(): #searches stuff and actually works! searches by type not by name
     query = searchBar.get().strip().lower()
-    filteredData = fileread[fileread["Name"].str.lower().str.contains(query)]
+    filteredData = fileread[
+        fileread['Type 1'].str.lower().str.contains(query) |
+        fileread['Type 2'].str.lower().str.contains(query)
+    ]
     destroy_button()
+    filteredData = filteredData.drop_duplicates(subset=['Name','Type 1','Type 2'])
     for index,row in filteredData.iterrows():
         name = row["Name"]
         type1 = row["Type 1"]
@@ -45,8 +63,8 @@ def search_call(): #search
         gen = row["Generation"]
         leg = row["Legendary"]
 
-        pSearchName = filteredData["Name"].iloc[0]  # Get the 'Name' of the first entry for that count
-        pSearchButton = ctk.CTkButton(buttonFrame, text=name, fg_color=Button2,
+        ppName = filteredData["Name"].iloc[0]  # Get the 'Name' of the first entry for that count
+        ppButton = ctk.CTkButton(buttonFrame, text=name, fg_color=Button2,
                                       command=lambda
                                           name = name,
                                           type1 = type1,
@@ -61,10 +79,10 @@ def search_call(): #search
                                           leg = leg:
                                           poke_button_press(name, type1, type2, hp, atk, defense, spAtk, spDef, spd, gen, leg))
 
-
+        ppButton.pack(pady=5, fill="both", expand=True)
 
                                     #tempName=name: poke_button_press(tempName))
-        pSearchButton.pack(pady=5, fill="both", expand=True)
+
 
 
 def poke_button_press(name, type1, type2, hp, atk, defense, spAtk, spDef, spd, gen, leg):
@@ -87,12 +105,12 @@ def poke_button_press(name, type1, type2, hp, atk, defense, spAtk, spDef, spd, g
 
 
 app = ctk.CTk(fg_color=Wall1)
-app.geometry("500x900")
+app.geometry("900x900")
 app.title("Pokedex with added storm flute")
 app.resizable(width = False, height = False)
 
 dataFrame = ctk.CTkTextbox(app)
-pokestats = dataFrame.insert(0.0,"Pokemon Stats Go Here!")
+pokestats = dataFrame.insert(0.0,"Pokemon Stats Go Here! \n MAKE SURE TO SEARCH BY \n TYPE NOT BY NAME")
 dataFrame.pack(side = "right", fill="y")
 
 searchFrame = ctk.CTkFrame(app, fg_color= Wall1)
@@ -104,10 +122,20 @@ buttonFrame.pack(fill= "both", expand= True)
 searchBar = ctk.CTkEntry(searchFrame,width= 300, fg_color= SearchBar)
 searchBar.pack(side= "left", padx= 10)
 
-searchEntry = ctk.CTkButton(searchFrame, fg_color= Button, text= "Search", command=search_call())
-searchEntry.pack(side= "right", padx= 10)
+searchButton = ctk.CTkButton(searchFrame, fg_color= Button, text= "Search", command=search_call)
+searchButton.pack(side= "right", padx= 10)
 
+#Frame for the button
+functionFrame = ctk.CTkFrame(searchFrame)
+functionFrame.pack(fill="x")
 
+#Graph Button to summon matplotlib
+graphButton = ctk.CTkButton(functionFrame,
+                            command=generate_type_graph,
+                            fg_color= Button2,
+                            hover_color= Button,
+                            Text='Graph')
+graphButton.pack(side="left", expand = True, padx = 5, pady = 5)
 
 search_call()
 
