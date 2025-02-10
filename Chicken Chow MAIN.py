@@ -130,12 +130,13 @@ functionFrame = ctk.CTkFrame(searchFrame)
 functionFrame.pack(fill="x")
 
 #Graph Button to summon matplotlib
+# Create the button
 graphButton = ctk.CTkButton(functionFrame,
-                            command=generate_type_graph,
-                            fg_color= Button2,
-                            hover_color= Button,
-                            Text='Graph')
-graphButton.pack(side="left", expand = True, padx = 5, pady = 5)
+                            command=generate_type_graph,  # Ensure this function is defined
+                            fg_color=Button2,  # Use the color defined above
+                            hover_color=Button,  # Use the color defined above
+                            text='Graph')  # Corrected the attribute to lowercase 'text'
+graphButton.pack(side="left", expand=True, padx=5, pady=5)
 
 search_call()
 
